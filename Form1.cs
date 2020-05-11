@@ -89,9 +89,13 @@ namespace recommendation_system
             //this.Height = button.Height;
         }
 
+
+
         #endregion
 
-       
+        private void search_button_Click(object sender, EventArgs e)
+        {
 
+        }
     }
 }
