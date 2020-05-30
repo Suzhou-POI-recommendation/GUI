@@ -51,6 +51,8 @@
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.bunifuMaterialTextbox1 = new Bunifu.Framework.UI.BunifuMaterialTextbox();
             this.search_button = new System.Windows.Forms.Button();
+            this.bunifuWebClient1 = new Bunifu.Framework.UI.BunifuWebClient(this.components);
+            this.map_webbrowser = new System.Windows.Forms.WebBrowser();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.file_slide.SuspendLayout();
@@ -68,7 +70,7 @@
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Margin = new System.Windows.Forms.Padding(1);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(164, 565);
+            this.panel1.Size = new System.Drawing.Size(165, 613);
             this.panel1.TabIndex = 5;
             this.panel1.MouseEnter += new System.EventHandler(this.file_slide_MouseLeave);
             // 
@@ -81,7 +83,7 @@
             this.label1.Location = new System.Drawing.Point(-2, 0);
             this.label1.Margin = new System.Windows.Forms.Padding(1, 0, 1, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(166, 48);
+            this.label1.Size = new System.Drawing.Size(167, 58);
             this.label1.TabIndex = 5;
             this.label1.Text = "Suzhou";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -209,7 +211,7 @@
             this.Exit_Button.ForeColor = System.Drawing.Color.Black;
             this.Exit_Button.Image = ((System.Drawing.Image)(resources.GetObject("Exit_Button.Image")));
             this.Exit_Button.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.Exit_Button.Location = new System.Drawing.Point(626, 2);
+            this.Exit_Button.Location = new System.Drawing.Point(680, 9);
             this.Exit_Button.Margin = new System.Windows.Forms.Padding(1);
             this.Exit_Button.Name = "Exit_Button";
             this.Exit_Button.Size = new System.Drawing.Size(67, 40);
@@ -298,15 +300,16 @@
             this.panel7.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(248)))), ((int)(((byte)(248)))));
             this.panel7.Controls.Add(this.Exit_Button);
             this.panel7.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel7.Location = new System.Drawing.Point(164, 0);
+            this.panel7.Location = new System.Drawing.Point(165, 0);
             this.panel7.Margin = new System.Windows.Forms.Padding(1);
             this.panel7.Name = "panel7";
-            this.panel7.Size = new System.Drawing.Size(703, 48);
+            this.panel7.Size = new System.Drawing.Size(756, 58);
             this.panel7.TabIndex = 8;
             this.panel7.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
             // 
             // contextMenuStrip1
             // 
+            this.contextMenuStrip1.ImageScalingSize = new System.Drawing.Size(40, 40);
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
             // 
@@ -325,7 +328,7 @@
             this.bunifuMaterialTextbox1.Location = new System.Drawing.Point(386, 63);
             this.bunifuMaterialTextbox1.Margin = new System.Windows.Forms.Padding(4);
             this.bunifuMaterialTextbox1.Name = "bunifuMaterialTextbox1";
-            this.bunifuMaterialTextbox1.Size = new System.Drawing.Size(273, 34);
+            this.bunifuMaterialTextbox1.Size = new System.Drawing.Size(273, 40);
             this.bunifuMaterialTextbox1.TabIndex = 12;
             this.bunifuMaterialTextbox1.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
             // 
@@ -341,7 +344,7 @@
             this.search_button.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.search_button.ForeColor = System.Drawing.Color.Black;
             this.search_button.Image = ((System.Drawing.Image)(resources.GetObject("search_button.Image")));
-            this.search_button.Location = new System.Drawing.Point(628, 63);
+            this.search_button.Location = new System.Drawing.Point(628, 65);
             this.search_button.Margin = new System.Windows.Forms.Padding(1);
             this.search_button.Name = "search_button";
             this.search_button.Size = new System.Drawing.Size(31, 30);
@@ -350,18 +353,40 @@
             this.search_button.UseVisualStyleBackColor = false;
             this.search_button.Click += new System.EventHandler(this.search_button_Click);
             // 
+            // bunifuWebClient1
+            // 
+            this.bunifuWebClient1.AllowReadStreamBuffering = false;
+            this.bunifuWebClient1.AllowWriteStreamBuffering = false;
+            this.bunifuWebClient1.BaseAddress = "";
+            this.bunifuWebClient1.CachePolicy = null;
+            this.bunifuWebClient1.Credentials = null;
+            this.bunifuWebClient1.Encoding = ((System.Text.Encoding)(resources.GetObject("bunifuWebClient1.Encoding")));
+            this.bunifuWebClient1.Headers = ((System.Net.WebHeaderCollection)(resources.GetObject("bunifuWebClient1.Headers")));
+            this.bunifuWebClient1.QueryString = ((System.Collections.Specialized.NameValueCollection)(resources.GetObject("bunifuWebClient1.QueryString")));
+            this.bunifuWebClient1.UseDefaultCredentials = false;
+            // 
+            // map_webbrowser
+            // 
+            this.map_webbrowser.Location = new System.Drawing.Point(192, 112);
+            this.map_webbrowser.MinimumSize = new System.Drawing.Size(20, 20);
+            this.map_webbrowser.Name = "map_webbrowser";
+            this.map_webbrowser.ScrollBarsEnabled = false;
+            this.map_webbrowser.Size = new System.Drawing.Size(708, 489);
+            this.map_webbrowser.TabIndex = 14;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(241)))), ((int)(((byte)(246)))));
-            this.ClientSize = new System.Drawing.Size(867, 565);
+            this.ClientSize = new System.Drawing.Size(921, 613);
             this.Controls.Add(this.search_button);
             this.Controls.Add(this.bunifuMaterialTextbox1);
             this.Controls.Add(this.panel7);
             this.Controls.Add(this.file_slide);
             this.Controls.Add(this.panel1);
+            this.Controls.Add(this.map_webbrowser);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Margin = new System.Windows.Forms.Padding(1);
             this.MaximizeBox = false;
@@ -403,6 +428,9 @@
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private Bunifu.Framework.UI.BunifuMaterialTextbox bunifuMaterialTextbox1;
         private System.Windows.Forms.Button search_button;
+        private Bunifu.Framework.UI.BunifuWebClient bunifuWebClient1;
+        private System.Windows.Forms.WebBrowser map_webbrowser;
+        
     }
 }
 
