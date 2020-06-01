@@ -18,6 +18,9 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Device.Location;
 using System.ComponentModel;
+using MySql.Data.MySqlClient;
+using MySql.Data.MySqlClient.Memcached;
+using MySqlX.XDevAPI.Common;
 
 namespace recommendation_system
 {
@@ -38,7 +41,16 @@ namespace recommendation_system
             map_webbrowser.Navigate(Application.StartupPath+@"\map_page.html");
             map_webbrowser.NewWindow += new CancelEventHandler(Web_NewWindow);
             //map_webbrowser.Navigate(url.ToString());
-            GetLocationEvent(); 
+            GetLocationEvent();
+            Image.FromFile("../icon/color0.jpg");
+
+            imageList1.Images.Add(Image.FromFile("../icon/weibo.jpg"));
+            imageList1.Images.Add(Image.FromFile("../icon/color0.jpg"));
+            imageList1.Images.Add(Image.FromFile("../icon/color1.jpg"));
+            imageList1.Images.Add(Image.FromFile("../icon/color2.jpg"));
+            imageList1.Images.Add(Image.FromFile("../icon/color3.jpg"));
+            imageList1.Images.Add(Image.FromFile("../icon/color4.jpg"));
+            imageList1.Images.Add(Image.FromFile("../icon/color5.jpg"));
         }
 
         #region Web模块
@@ -98,6 +110,7 @@ namespace recommendation_system
         //0x84 = WM_NCHITTEST - Mouse Capture Test
         //0x1 = HTCLIENT - Application Client Area
         //0x2 = HTCAPTION - Application Title Bar
+        
         public const int WM_NCLBUTTONDOWN = 0xA1;//非客户区
         public const int HT_CAPTION = 0x2;//标题栏
         [System.Runtime.InteropServices.DllImport("user32.dll")]
@@ -159,9 +172,212 @@ namespace recommendation_system
 
         #endregion
 
+        
+
         private void search_button_Click(object sender, EventArgs e)
         {
 
         }
+
+        public string connectionString =
+            "Data Source=127.0.0.1;Database=poi;User ID=root;Password=duhaode520;Charset=utf8;Allow User Variables=True;SslMode=None"; //连接字符串
+
+        #region 分类推荐
+
+        private void RecommendByCategory(string category)
+        {
+            //更改界面状态
+            const double level = 0.45;
+            file_slide.Visible = false;
+            panelResult.Visible = true;
+            map_webbrowser.Visible = false;
+            treeView1.Nodes.Clear();
+
+            //查询对应分类的poi
+            string query = "select poiid, title, public_grading from public_grading where poiid in" +
+                "(SELECT poiid FROM poi.pois_primary_category_suzhou where first_category = '" +
+                category +
+                "') order by public_grading desc limit 0, 200; ";//显示太多会炸
+            MySqlConnection cnn = null;
+            MySqlConnection weibocnn = null;
+            MySqlCommand cmd;
+            MySqlDataReader dataReader = null;
+            MySqlDataReader weiboReader = null;
+
+            //建立poi查询连接
+            try
+            {
+                cnn = new MySqlConnection(connectionString);
+                cnn.Open();
+                weibocnn = new MySqlConnection(connectionString);
+                weibocnn.Open();
+                cmd = new MySqlCommand();
+                cmd.Connection = cnn;
+                cmd.CommandText = query;
+
+                dataReader = cmd.ExecuteReader();
+
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            //逐行处理
+            while (dataReader.Read())
+            {
+                //创建新的树节点
+                TreeNode treeNode = new TreeNode();
+                treeNode.Text = dataReader.GetString(1);
+                
+                //确定分级根据分级选择相应图片显示
+                int starcount = Convert.ToInt32(dataReader.GetDouble(2) / level)+1;
+                if (starcount > 6)
+                    starcount = 6;
+                treeNode.ImageIndex = starcount;
+                treeNode.SelectedImageIndex = starcount;
+
+                //poi上的部分微博查询
+                string weiboQuery = String.Format("SELECT `text`,original_pic FROM poi.travel_poi_weibos_suzhou " +
+                    "where annotation_place_poiid = '{0}'Limit 0, 20;", dataReader.GetString(0));//只显示一小部分微博
+                try
+                {
+                    cmd = new MySqlCommand();
+                    cmd.Connection = weibocnn;
+                    cmd.CommandText = weiboQuery;
+
+                    weiboReader = cmd.ExecuteReader();
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                
+                //添加微博数据为子节点
+                while (weiboReader.Read())
+                {
+                    TreeNode weiboNode = new TreeNode(weiboReader.GetString(0));
+                    weiboNode.Tag = weiboReader.GetString(1);//传递图片url
+                    treeNode.Nodes.Add(weiboNode);
+                    
+                }
+                treeView1.Nodes.Add(treeNode);
+
+                weiboReader.Close();
+            }
+            dataReader.Close();
+            cnn.Close();
+            weibocnn.Close();
+        }
+
+        private void btnReturn_Click(object sender, EventArgs e)
+        {
+            panelResult.Visible = false;
+            map_webbrowser.Visible = true;
+        }
+
+        private void btnCategory1_Click(object sender, EventArgs e)
+        {
+            RecommendByCategory(btnCategory1.Text);
+        }
+
+        private void btnCategory2_Click(object sender, EventArgs e)
+        {
+            RecommendByCategory(btnCategory2.Text);
+        }
+
+        private void btnCategory3_Click(object sender, EventArgs e)
+        {
+            RecommendByCategory(btnCategory3.Text);
+        }
+
+        private void btnCategory4_Click(object sender, EventArgs e)
+        {
+            RecommendByCategory(btnCategory4.Text);
+        }
+
+        private void btnCategory5_Click(object sender, EventArgs e)
+        {
+            RecommendByCategory(btnCategory5.Text);
+        }
+
+        private void btnCategory6_Click(object sender, EventArgs e)
+        {
+            RecommendByCategory(btnCategory6.Text);
+        }
+
+        private void btnCategory7_Click(object sender, EventArgs e)
+        {
+            RecommendByCategory(btnCategory7.Text);
+        }
+
+        private void btnCategory8_Click(object sender, EventArgs e)
+        {
+            RecommendByCategory(btnCategory8.Text);
+        }
+
+        private void btnCategory9_Click(object sender, EventArgs e)
+        {
+            RecommendByCategory(btnCategory9.Text);
+        }
+
+        private void btnCategory10_Click(object sender, EventArgs e)
+        {
+            RecommendByCategory(btnCategory10.Text);
+        }
+
+        private void btnCategory11_Click(object sender, EventArgs e)
+        {
+            RecommendByCategory(btnCategory11.Text);
+        }
+
+        private void btnCategory12_Click(object sender, EventArgs e)
+        {
+            RecommendByCategory(btnCategory12.Text);
+        }
+
+        private void btnCategory13_Click(object sender, EventArgs e)
+        {
+            RecommendByCategory(btnCategory13.Text);
+        }
+
+        private void btnCategory14_Click(object sender, EventArgs e)
+        {
+            RecommendByCategory(btnCategory14.Text);
+        }
+
+        private void btnCategory15_Click(object sender, EventArgs e)
+        {
+            RecommendByCategory(btnCategory15.Text);
+        }
+
+        private void btnCategory16_Click(object sender, EventArgs e)
+        {
+            RecommendByCategory(btnCategory16.Text);
+        }
+
+        private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            //控制显示图片按钮的可用性
+            if (treeView1.SelectedNode.Tag!= null && !treeView1.SelectedNode.Tag.Equals(""))
+                btnShowPicture.Enabled = true;
+            else
+                btnShowPicture.Enabled = false;
+        }
+
+        private void btnShowPicture_Click(object sender, EventArgs e)
+            //显示微博中的图片
+        {
+            string url = (string)treeView1.SelectedNode.Tag;
+            System.Net.WebRequest webreq = System.Net.WebRequest.Create(url);
+            System.Net.WebResponse webres = webreq.GetResponse();
+            using (System.IO.Stream stream = webres.GetResponseStream())
+            {
+                pictureBox1.Image = Image.FromStream(stream);
+            }
+        }
+
+        #endregion
+
     }
 }
