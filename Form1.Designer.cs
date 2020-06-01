@@ -69,9 +69,11 @@
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.btnReturn = new System.Windows.Forms.Button();
             this.panelResult = new System.Windows.Forms.Panel();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.label2 = new System.Windows.Forms.Label();
             this.btnShowPicture = new System.Windows.Forms.Button();
+            this.label2 = new System.Windows.Forms.Label();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.textBoxHint = new System.Windows.Forms.TextBox();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.file_slide.SuspendLayout();
@@ -270,7 +272,7 @@
             this.file_slide.Location = new System.Drawing.Point(328, 260);
             this.file_slide.Margin = new System.Windows.Forms.Padding(6);
             this.file_slide.Name = "file_slide";
-            this.file_slide.Size = new System.Drawing.Size(660, 400);
+            this.file_slide.Size = new System.Drawing.Size(641, 400);
             this.file_slide.TabIndex = 7;
             this.file_slide.Visible = false;
             this.file_slide.MouseLeave += new System.EventHandler(this.file_slide_MouseLeave);
@@ -668,6 +670,8 @@
             // 
             // panelResult
             // 
+            this.panelResult.Controls.Add(this.textBoxHint);
+            this.panelResult.Controls.Add(this.progressBar1);
             this.panelResult.Controls.Add(this.btnShowPicture);
             this.panelResult.Controls.Add(this.label2);
             this.panelResult.Controls.Add(this.pictureBox1);
@@ -678,27 +682,6 @@
             this.panelResult.Size = new System.Drawing.Size(1416, 985);
             this.panelResult.TabIndex = 15;
             this.panelResult.Visible = false;
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(241)))), ((int)(((byte)(246)))));
-            this.pictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.pictureBox1.Location = new System.Drawing.Point(867, 474);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(549, 508);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox1.TabIndex = 2;
-            this.pictureBox1.TabStop = false;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label2.Location = new System.Drawing.Point(1092, 423);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(99, 36);
-            this.label2.TabIndex = 3;
-            this.label2.Text = "图片栏";
             // 
             // btnShowPicture
             // 
@@ -715,6 +698,45 @@
             this.btnShowPicture.Text = "显示图片";
             this.btnShowPicture.UseVisualStyleBackColor = false;
             this.btnShowPicture.Click += new System.EventHandler(this.btnShowPicture_Click);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label2.Location = new System.Drawing.Point(1092, 423);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(99, 36);
+            this.label2.TabIndex = 3;
+            this.label2.Text = "图片栏";
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(241)))), ((int)(((byte)(246)))));
+            this.pictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.pictureBox1.Location = new System.Drawing.Point(867, 474);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(549, 508);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox1.TabIndex = 2;
+            this.pictureBox1.TabStop = false;
+            // 
+            // progressBar1
+            // 
+            this.progressBar1.Location = new System.Drawing.Point(867, 245);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(549, 38);
+            this.progressBar1.TabIndex = 5;
+            this.progressBar1.Visible = false;
+            // 
+            // textBoxHint
+            // 
+            this.textBoxHint.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(241)))), ((int)(((byte)(246)))));
+            this.textBoxHint.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.textBoxHint.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.textBoxHint.Location = new System.Drawing.Point(871, 203);
+            this.textBoxHint.Name = "textBoxHint";
+            this.textBoxHint.Size = new System.Drawing.Size(470, 32);
+            this.textBoxHint.TabIndex = 7;
             // 
             // Form1
             // 
@@ -796,6 +818,8 @@
         private System.Windows.Forms.Button btnReturn;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button btnShowPicture;
+        private System.Windows.Forms.ProgressBar progressBar1;
+        private System.Windows.Forms.TextBox textBoxHint;
     }
 }
 
