@@ -21,6 +21,9 @@ using System.ComponentModel;
 using MySql.Data.MySqlClient;
 using MySql.Data.MySqlClient.Memcached;
 using MySqlX.XDevAPI.Common;
+using System.Data;
+using MySqlX.XDevAPI.Relational;
+using System.Threading;
 
 namespace recommendation_system
 {
@@ -180,7 +183,8 @@ namespace recommendation_system
         }
 
         public string connectionString =
-            "Data Source=127.0.0.1;Database=poi;User ID=root;Password=duhaode520;Charset=utf8;Allow User Variables=True;SslMode=None"; //连接字符串
+            "Data Source=127.0.0.1;Database=wei_bo;User ID=root;Password=root;Charset=utf8;Allow User Variables=True;SslMode=None"; //连接字符串
+            //"Data Source=127.0.0.1;Database=wei_bo;User ID=root;Password=root;Charset=utf8";
 
         #region 分类推荐
 
@@ -195,12 +199,12 @@ namespace recommendation_system
 
             //查询对应分类的poi
             string query = "select poiid, title, public_grading from public_grading where poiid in" +
-                "(SELECT poiid FROM poi.pois_primary_category_suzhou where first_category = '" +
+                "(SELECT poiid FROM pois_primary_category_suzhou where first_category = '" +
                 category +
-                "') order by public_grading desc limit 0, 200; ";//显示太多会炸
+                "') order by public_grading desc limit 0, 100; ";//显示太多会炸
             MySqlConnection cnn = null;
             MySqlConnection weibocnn = null;
-            MySqlCommand cmd;
+            MySqlCommand cmd; MySqlCommand cmd1;
             MySqlDataReader dataReader = null;
             MySqlDataReader weiboReader = null;
 
@@ -238,15 +242,15 @@ namespace recommendation_system
                 treeNode.SelectedImageIndex = starcount;
 
                 //poi上的部分微博查询
-                string weiboQuery = String.Format("SELECT `text`,original_pic FROM poi.travel_poi_weibos_suzhou " +
+                string weiboQuery = String.Format("SELECT `text`,original_pic FROM wei_bo.travel_poi_weibos_suzhou " +
                     "where annotation_place_poiid = '{0}'Limit 0, 20;", dataReader.GetString(0));//只显示一小部分微博
                 try
                 {
-                    cmd = new MySqlCommand();
-                    cmd.Connection = weibocnn;
-                    cmd.CommandText = weiboQuery;
+                    cmd1 = new MySqlCommand();
+                    cmd1.Connection = weibocnn;
+                    cmd1.CommandText = weiboQuery;
 
-                    weiboReader = cmd.ExecuteReader();
+                    weiboReader = cmd1.ExecuteReader();
                 }
                 catch (Exception e)
                 {
@@ -379,5 +383,158 @@ namespace recommendation_system
 
         #endregion
 
+        
+
+        public static DataTable ExecuteQuery2(string connectionString, string strSQL)
+        {
+            MySqlConnection cnn = new MySqlConnection(connectionString);
+            DataTable dt = null;
+
+            try
+            {
+
+                MySqlDataAdapter adapter = new MySqlDataAdapter(strSQL, cnn);
+                DataSet ds = new DataSet();
+                if (adapter.Fill(ds) > 0)
+                    dt = ds.Tables[0];
+            }
+            catch (Exception msg)
+            {
+                System.Console.WriteLine(msg.ToString());
+                return dt;
+            }
+            cnn.Close();
+            return dt;
+        }
+
+       
+        private void PersonalRecommandation1(int gender, int local, string Category)//用户提供个人信息
+        {
+            string Month = DateTime.Now.Month.ToString();//获取当前月份
+            //更改界面状态
+            const double level = 0.45;
+            file_slide.Visible = false;
+            panelResult.Visible = true;
+            map_webbrowser.Visible = false;
+            treeView1.Nodes.Clear();
+
+            //建立记录个性化评分的datatable
+            DataTable table1;
+            if (gender == 1 && local == 1)
+            {
+                string sql1 = "SELECT poiid, title,gender_ratio*local_ratio*public_grading new_grade,month FROM wei_bo.personal_grading where first_category in (" + Category + ");";
+                table1 = ExecuteQuery2(connectionString, sql1);
+            }
+            else if (gender == 1 && local == 2)
+            {
+                string sql1 = "SELECT poiid, title,gender_ratio*(1-local_ratio)*public_grading new_grade,month FROM wei_bo.personal_grading where first_category in (" + Category + ");";
+                table1 = ExecuteQuery2(connectionString, sql1);
+            }
+            else if (gender == 2 && local == 1)
+            {
+                string sql1 = "SELECT poiid, title,(1-gender_ratio)*local_ratio*public_grading new_grade,month FROM wei_bo.personal_grading where first_category in (" + Category + ");";
+                table1 = ExecuteQuery2(connectionString, sql1);
+            }
+            else if(gender==2 && local==1)
+            {
+                string sql1 = "SELECT poiid, title,(1-gender_ratio)*(1-local_ratio)*public_grading new_grade,month FROM wei_bo.personal_grading where first_category in (" + Category + ");";
+                table1 = ExecuteQuery2(connectionString, sql1);
+            }
+            else
+            {
+                string sql1 = "SELECT poiid, title,(1-local_ratio)*public_grading new_grade,month FROM wei_bo.personal_grading where first_category in ('美食','购物','酒店','休闲娱乐');";
+                table1 = ExecuteQuery2(connectionString, sql1);
+            }
+
+
+            int i = 0;
+            while (i < table1.Rows.Count)
+            {
+                if (Convert.ToString(table1.Rows[i][3]).Contains(Month))
+                {
+                    table1.Rows[i][2] = Convert.ToSingle(table1.Rows[i][2]);
+                }
+                else
+                {
+                    table1.Rows[i][2] = Convert.ToSingle(table1.Rows[i][2]) * 0.5;
+                }
+                i++;
+            }
+            DataView dv = table1.DefaultView;
+            dv.Sort = "new_grade Desc";
+            table1 = dv.ToTable();
+
+            //数据库连接模式
+            MySqlConnection weibocnn = null;
+            weibocnn = new MySqlConnection(connectionString);
+            weibocnn.Open();
+            MySqlCommand cmd;
+            cmd = new MySqlCommand();
+            cmd.Connection = weibocnn;
+            MySqlDataReader weiboReader = null;
+
+            //逐行处理
+            int k = 0;
+            while (k < 100)
+            {
+                k++;
+                //创建新的树节点
+                TreeNode treeNode = new TreeNode();
+                treeNode.Text = Convert.ToString(table1.Rows[k][1]);
+
+                //确定分级根据分级选择相应图片显示
+                int starcount = Convert.ToInt32(Convert.ToSingle(table1.Rows[k][2]) / level) + 1;
+                if (starcount > 6)
+                    starcount = 6;
+                treeNode.ImageIndex = starcount;
+                treeNode.SelectedImageIndex = starcount;
+
+                //poi上的部分微博查询
+                string weiboQuery = String.Format("SELECT `text`,original_pic FROM wei_bo.travel_poi_weibos_suzhou " +
+                    "where annotation_place_poiid = '{0}'Limit 0, 10;", Convert.ToString(table1.Rows[k][0]));//只显示一小部分微博
+                try
+                {
+                    cmd.CommandText = weiboQuery;
+                    weiboReader = cmd.ExecuteReader();
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+
+                //添加微博数据为子节点
+                while (weiboReader.Read())
+                {
+                    TreeNode weiboNode = new TreeNode(weiboReader.GetString(0));
+                    weiboNode.Tag = weiboReader.GetString(1);//传递图片url
+                    treeNode.Nodes.Add(weiboNode);
+
+                }
+                treeView1.Nodes.Add(treeNode);
+                weiboReader.Close();
+                cmd.Cancel();
+
+            }
+            
+            //dataReader.Close();
+            //cnn.Close();
+            //weibocnn.Close();
+        }
+        public static int Gender = 0; 
+        public static int Local = 0;
+        public static string Category =string.Empty;
+        public bool FirstEnter = true;
+        private void button7_Click(object sender, EventArgs e)
+        {
+            if (FirstEnter)
+            {
+                FirstEnter = false;
+                Form2 form = new Form2();
+                form.ShowDialog();
+            }
+            
+            PersonalRecommandation1(Gender, Local, Category);
+        }
+       
     }
 }
