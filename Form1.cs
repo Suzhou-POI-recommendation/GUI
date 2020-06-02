@@ -45,7 +45,7 @@ namespace recommendation_system
             map_webbrowser.NewWindow += new CancelEventHandler(Web_NewWindow);
             //map_webbrowser.Navigate(url.ToString());
             GetLocationEvent();
-            Image.FromFile("../icon/color0.jpg");
+           /* Image.FromFile("../icon/color0.jpg");
 
             imageList1.Images.Add(Image.FromFile("../icon/weibo.jpg"));
             imageList1.Images.Add(Image.FromFile("../icon/color0.jpg"));
@@ -53,7 +53,7 @@ namespace recommendation_system
             imageList1.Images.Add(Image.FromFile("../icon/color2.jpg"));
             imageList1.Images.Add(Image.FromFile("../icon/color3.jpg"));
             imageList1.Images.Add(Image.FromFile("../icon/color4.jpg"));
-            imageList1.Images.Add(Image.FromFile("../icon/color5.jpg"));
+            imageList1.Images.Add(Image.FromFile("../icon/color5.jpg"));*/
         }
 
         #region Web模块
