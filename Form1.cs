@@ -179,10 +179,11 @@ namespace recommendation_system
         #endregion
 
 
-
-        //TODO:修改credential！！
-        Credential cred = new Credential();
         
+        //TODO:提交前修改credential！！
+        Credential cred = new Credential
+        {
+        };
         private void search_button_Click(object sender, EventArgs e)
             //搜索功能
         {
