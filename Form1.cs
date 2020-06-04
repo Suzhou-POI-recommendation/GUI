@@ -259,7 +259,7 @@ namespace recommendation_system
         #region 搜索及评分
 
         //TODO:修改credential！！
-        Credential cred = new Credential{ SecretId = "AKIDNWODzVLkhPqKXe7GdldExQbXHK7jKE6j", SecretKey = "VjhPvC72jAKXUActbmeHf99uT0HUYQ4V" };
+        Credential cred = new Credential{};
         private void search_button_Click(object sender, EventArgs e)
             //搜索功能
         {
